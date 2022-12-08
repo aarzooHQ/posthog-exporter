@@ -266,6 +266,10 @@ export async function exportEvents(events: PluginEvent[], { global, jobs }: Post
         }
 
         batch.push(parsedEvent)
+        if(batch.length % 10 === 0){
+            console.log("Printing message now")
+            console.log(JSON.stringify(parsedEvent))
+        }
     }
 
     if (batch.length > 0) {
