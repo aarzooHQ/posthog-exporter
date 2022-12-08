@@ -127,7 +127,6 @@ export const setupPlugin: PostgresPlugin['setupPlugin'] = async (meta) => {
             viewport_height int,
             viewport_width int,
             search_engine varchar(200),
-            event varchar(200),
             selected_plan varchar(200),
             image_key varchar(200),
             position varchar(200),
