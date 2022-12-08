@@ -34,6 +34,42 @@ interface ParsedEvent {
     ip: string | null
     site_url: string
     timestamp: string
+    os?: string
+    city?: string
+    timezone?: string
+    country_code?: string
+    country?: string
+    browser?: string
+    browser_version?: string
+    device?: string
+    device_id?: string
+    pathname?: string
+    referrer?: string
+    referring_domain?: string
+    initial_pathname?: string
+    initial_referrer?: string
+    initial_device?: string
+    initial_browser_version?: string
+    initial_city?: string
+    initial_timezone?: string
+    initial_country_code?: string
+    initial_country?: string
+    initial_referring_domain?: string
+    initial_os?: string
+    session_id?: string
+    url?: String
+    screen_height?: number
+    screen_width?: number
+    viewport_height?: number
+    viewport_width?: number
+    search_engine?: string
+    selected_plan?: string
+    image_key?: string
+    position?: string
+    button?: string
+    screen?: string
+    billing_cycle?: string
+    
 }
 
 interface UploadJobPayload {
@@ -73,7 +109,6 @@ export const setupPlugin: PostgresPlugin['setupPlugin'] = async (meta) => {
     console.log('Setting up in progress 1')
     const { global, config } = meta
 
-    console.log(meta)
     if (!config.databaseUrl) {
         const requiredConfigOptions = ['host', 'port', 'dbName', 'dbUsername', 'dbPassword']
         for (const option of requiredConfigOptions) {
@@ -98,41 +133,41 @@ export const setupPlugin: PostgresPlugin['setupPlugin'] = async (meta) => {
             distinct_id varchar(200),
             ip varchar(200),
             site_url varchar(200),
-            os varchar(200),
-            city varchar(200),
-            timezone varchar(200),
-            country_code varchar(200),
-            country varchar(200),
-            browser varchar(200),
-            browser_version varchar(200),
-            device varchar(200),
-            device_id varchar(200),
-            pathname varchar(200),
-            referrer varchar(500),
-            referring_domain varchar(500),
-            initial_pathname varchar(200),
-            initial_referrer varchar(500),
-            initial_device varchar(200),
-            initial_browser_version varchar(200),
-            initial_city varchar(200),
-            initial_timezone varchar(200),
-            initial_country_code varchar(200),
-            initial_country varchar(200),
-            initial_referring_domain varchar(500),
-            initial_os varchar(200),
-            session_id varchar(200),
-            url varchar(500),
-            screen_height int,
-            screen_width int,
-            viewport_height int,
-            viewport_width int,
-            search_engine varchar(200),
-            selected_plan varchar(200),
-            image_key varchar(200),
-            position varchar(200),
-            button varchar(200),
-            screen varchar(200),
-            billing_cycle varchar(200)
+            os varchar(200) null,
+            city varchar(200)  null,
+            timezone varchar(200) null,
+            country_code varchar(200) null,
+            country varchar(200) null,
+            browser varchar(200) null,
+            browser_version varchar(200) null,
+            device varchar(200) null,
+            device_id varchar(200) null,
+            pathname varchar(200) null,
+            referrer varchar(500) null,
+            referring_domain varchar(500) null,
+            initial_pathname varchar(200) null,
+            initial_referrer varchar(500) null,
+            initial_device varchar(200) null,
+            initial_browser_version varchar(200) null,
+            initial_city varchar(200) null,
+            initial_timezone varchar(200) null,
+            initial_country_code varchar(200) null,
+            initial_country varchar(200) null,
+            initial_referring_domain varchar(500) null,
+            initial_os varchar(200) null,
+            session_id varchar(200) null,
+            url varchar(500) null,
+            screen_height int null,
+            screen_width int null,
+            viewport_height int null,
+            viewport_width int null,
+            search_engine varchar(200) null,
+            selected_plan varchar(200) null,
+            image_key varchar(200) null,
+            position varchar(200) null,
+            button varchar(200) null,
+            screen varchar(200) null,
+            billing_cycle varchar(200) null
         );`,
         [],
         config
@@ -193,6 +228,41 @@ export async function exportEvents(events: PluginEvent[], { global, jobs }: Post
             ip,
             site_url,
             timestamp: new Date(timestamp).toISOString(),
+            os: properties?.$os,
+            city: properties?.$geoip_city_name,
+            timezone: properties?.$geoip_time_zone,
+            country_code: properties?.$geoip_country_code,
+            country: properties?.$geoip_country_name,
+            browser: properties?.$browser,
+            browser_version: properties?.$browser_version,
+            device: properties?.device,
+            device_id: properties?.device_id, 
+            pathname: properties?.$pathname,
+            referrer: properties?.$referrer,
+            referring_domain: properties?.$referring_domain, 
+            initial_pathname: $set_once?.$initial_pathname,
+            initial_referrer: $set_once?.$initial_referrer,
+            initial_device: $set_once?.$initial_device_type,
+            initial_browser_version: $set_once?.initial_browser_version,
+            initial_city: $set_once?.$initial_geoip_city_name,
+            initial_timezone: $set_once?.$initial_geoip_time_zone,
+            initial_country_code: $set_once?.$initial_geoip_country_code,
+            initial_country: $set_once?.$initial_geoip_country_name,
+            initial_referring_domain: $set_once?.$initial_referring_domain,
+            initial_os: $set_once?.$initial_os,
+            session_id: properties?.$session_id,
+            url: properties?.$current_url,
+            screen_height: properties?.$screen_height,
+            screen_width: properties?.$screen_width,
+            viewport_height: properties?.$viewport_height,
+            viewport_width: properties?.$viewport_width,
+            search_engine: properties?.$search_engine,
+            selected_plan: properties?.data?.selected_plan,
+            image_key: properties?.data?.image_key, 
+            position: properties?.data?.position, 
+            button: properties?.data?.button,
+            screen: properties?.data?.screen,
+            billing_cycle: properties?.data?.billing_cycle 
         }
 
         batch.push(parsedEvent)
