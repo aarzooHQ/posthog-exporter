@@ -105,7 +105,6 @@ export const jobs: PostgresPlugin['jobs'] = {
 }
 
 export const setupPlugin: PostgresPlugin['setupPlugin'] = async (meta) => {
-    console.log('Setting up in progress 1')
     const { global, config } = meta
 
     if (!config.databaseUrl) {
@@ -118,7 +117,6 @@ export const setupPlugin: PostgresPlugin['setupPlugin'] = async (meta) => {
     }
 
     global.sanitizedTableName = sanitizeSqlIdentifier(config.tableName)
-    console.log('Setting up in progress 2')
     const queryError = await executeQuery(
         `CREATE TABLE IF NOT EXISTS public.${global.sanitizedTableName} (
             uuid varchar(200),
@@ -171,7 +169,6 @@ export const setupPlugin: PostgresPlugin['setupPlugin'] = async (meta) => {
         [],
         config
     )
-    console.log('Setting up in progress 3')
     if (queryError) {
         throw new Error(`Unable to connect to PostgreSQL instance and create table with error: ${queryError.message}`)
     }
@@ -179,7 +176,6 @@ export const setupPlugin: PostgresPlugin['setupPlugin'] = async (meta) => {
     global.eventsToIgnore = new Set(
         config.eventsToIgnore ? config.eventsToIgnore.split(',').map((event) => event.trim()) : null
     )
-    console.log('Setting up in progress 4')
 }
 
 export async function exportEvents(events: PluginEvent[], { global, jobs }: PostgresMeta) {
@@ -294,10 +290,6 @@ export const insertBatchIntoPostgres = async (payload: UploadJobPayload, { globa
         }
         valuesString += `)${i === payload.batch.length - 1 ? '' : ','}`
         
-        if (i===0){
-            console.log("Values string")
-            console.log(valuesString)
-        }
         values = values.concat([
             uuid || generateUuid(),
             eventName,
