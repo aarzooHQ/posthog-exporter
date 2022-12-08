@@ -1,12 +1,12 @@
 {
-    "name": "PostgreSQL Export Plugin Dev",
+    "name": "MagicStudio Posthog to Postgres Exporter",
     "url": "https://github.com/aarzooHQ/posthog-exporter",
     "description": "Export PostHog events to a PostgreSQL instance on ingestion.",
     "main": "index.ts",
     "posthogVersion": ">= 1.29.0",
     "config": [
         {
-            "markdown": "Read [the documentation](https://github.com/PostHog/postgres-plugin) here for instructions in getting these keys."
+            "markdown": "Read [the documentation](https://github.com/aarzooHQ/posthog-exporter) here for instructions in getting these keys."
         },
         {
             "key": "hasSelfSignedCert",
