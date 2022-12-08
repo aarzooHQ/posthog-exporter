@@ -1,19 +1,86 @@
 {
-    "name": "<TODO: your plugin name>",
-    "url": "<TODO: Your Plugin URL here>",
-    "description": "<TODO: Your Plugin description here>",
+    "name": "PostgreSQL Export Plugin Dev",
+    "url": "https://github.com/aarzooHQ/posthog-exporter",
+    "description": "Export PostHog events to a PostgreSQL instance on ingestion.",
     "main": "index.js",
-    "posthogVersion": ">= 1.25.0",
+    "posthogVersion": ">= 1.29.0",
     "config": [
         {
-            "markdown": "<TODO: your plugin config, remove if none>"
+            "markdown": "Read [the documentation](https://github.com/PostHog/postgres-plugin) here for instructions in getting these keys."
         },
         {
-            "key": "greeting",
-            "name": "What greeting would you like to use?",
+            "key": "hasSelfSignedCert",
+            "name": "Does your Postgres instance have a self-signed SSL certificate?",
+            "type": "choice",
+            "choices": ["Yes", "No"],
+            "default": "No",
+            "hint": "In most cases, Heroku and RDS users should select 'Yes'."
+        },
+        {
+            "key": "databaseUrl",
+            "name": "PostgreSQL Database URL",
             "type": "string",
-            "default": "Hello World!",
-            "required": false
+            "hint": "You can use a URL containing host, port, username, and password, or fill in these fields individually below.",
+            "secret": true
+        },
+        {
+            "key": "host",
+            "name": "PostgreSQL instance host",
+            "type": "string",
+            "hint": "Example: `postgres.mydomain.com` (Required if Database URL is not specified)",
+            "required_if": [["databaseUrl", ""]],
+            "visible_if": [["databaseUrl", ""]]
+        },
+        {
+            "key": "port",
+            "name": "PostgreSQL instance port",
+            "type": "string",
+            "default": "5439",
+            "hint": "Default: 5439 (Required if Database URL is not specified)",
+            "required_if": [["databaseUrl", ""]],
+            "visible_if": [["databaseUrl", ""]]
+        },
+        {
+            "key": "dbName",
+            "name": "Database name",
+            "type": "string",
+            "hint": "Required if Database URL is not specified",
+            "default": "dev",
+            "required_if": [["databaseUrl", ""]],
+            "visible_if": [["databaseUrl", ""]]
+        },
+        {
+            "key": "tableName",
+            "name": "Table name",
+            "type": "string",
+            "default": "posthog_event",
+            "hint": "The plugin will create a table with this name to store the events in"
+        },
+        {
+            "key": "dbUsername",
+            "name": "Username available to the plugin for accessing your database instance",
+            "type": "string",
+            "default": "",
+            "hint": "This user needs table creation access (Required if Database URL is not specified)",
+            "required_if": [["databaseUrl", ""]],
+            "visible_if": [["databaseUrl", ""]]
+        },
+        {
+            "key": "dbPassword",
+            "name": "Password for the username specified above",
+            "type": "string",
+            "default": "",
+            "hint": "Required if Database URL is not specified",
+            "required_if": [["databaseUrl", ""]],
+            "visible_if": [["databaseUrl", ""]],
+            "secret": true
+        },
+        {
+            "key": "eventsToIgnore",
+            "name": "Events to ignore",
+            "type": "string",
+            "default": "$feature_flag_called",
+            "hint": "Comma separated list of events to ignore"
         }
     ]
 }
