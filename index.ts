@@ -132,8 +132,7 @@ export const setupPlugin: PostgresPlugin['setupPlugin'] = async (meta) => {
             position varchar(200),
             button varchar(200),
             screen varchar(200),
-            billing_cycle varchar(200),
-            position varchar(200)
+            billing_cycle varchar(200)
         );`,
         [],
         config
