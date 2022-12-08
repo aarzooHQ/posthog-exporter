@@ -69,7 +69,6 @@ interface ParsedEvent {
     button?: string
     screen?: string
     billing_cycle?: string
-    
 }
 
 interface UploadJobPayload {
@@ -266,10 +265,6 @@ export async function exportEvents(events: PluginEvent[], { global, jobs }: Post
         }
 
         batch.push(parsedEvent)
-        if(batch.length % 10 === 0){
-            console.log("Printing message now")
-            console.log(JSON.stringify(parsedEvent))
-        }
     }
 
     if (batch.length > 0) {
@@ -284,17 +279,25 @@ export const insertBatchIntoPostgres = async (payload: UploadJobPayload, { globa
     let valuesString = ''
 
     for (let i = 0; i < payload.batch.length; ++i) {
-        const { uuid, eventName, properties, elements, set, set_once, distinct_id, team_id, ip, site_url, timestamp } =
+        const { uuid, eventName, properties, elements, set, set_once, distinct_id, team_id, ip, site_url, timestamp, os, city, 
+            timezone, country_code, country, browser, browser_version, device, device_id, pathname, referrer, referring_domain, 
+            initial_pathname, initial_referrer, initial_device, initial_browser_version, initial_city, initial_timezone, 
+            initial_country_code, initial_country, initial_referring_domain, initial_os, session_id, url, screen_height, screen_width, 
+            viewport_height, viewport_width, search_engine, selected_plan, image_key, position, button, screen, billing_cycle } =
             payload.batch[i]
 
 
         // Creates format: ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11), ($12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)
         valuesString += ' ('
-        for (let j = 1; j <= 11; ++j) {
-            valuesString += `$${11 * i + j}${j === 11 ? '' : ', '}`
+        for (let j = 1; j <= 46; ++j) {
+            valuesString += `$${46 * i + j}${j === 46 ? '' : ', '}`
         }
         valuesString += `)${i === payload.batch.length - 1 ? '' : ','}`
         
+        if (i===0){
+            console.log("Values string")
+            console.log(valuesString)
+        }
         values = values.concat([
             uuid || generateUuid(),
             eventName,
@@ -307,6 +310,11 @@ export const insertBatchIntoPostgres = async (payload: UploadJobPayload, { globa
             ip,
             site_url,
             timestamp,
+            os, city, 
+            timezone, country_code, country, browser, browser_version, device, device_id, pathname, referrer, referring_domain, 
+            initial_pathname, initial_referrer, initial_device, initial_browser_version, initial_city, initial_timezone, 
+            initial_country_code, initial_country, initial_referring_domain, initial_os, session_id, url, screen_height, screen_width, 
+            viewport_height, viewport_width, search_engine, selected_plan, image_key, position, button, screen, billing_cycle
         ])
     }
 
@@ -317,7 +325,11 @@ export const insertBatchIntoPostgres = async (payload: UploadJobPayload, { globa
     )
 
     const queryError = await executeQuery(
-        `INSERT INTO ${global.sanitizedTableName} (uuid, event, properties, elements, set, set_once, distinct_id, team_id, ip, site_url, timestamp)
+        `INSERT INTO ${global.sanitizedTableName} (uuid, event, properties, elements, set, set_once, distinct_id, team_id, ip, site_url, timestamp, os, city, 
+            timezone, country_code, country, browser, browser_version, device, device_id, pathname, referrer, referring_domain, 
+            initial_pathname, initial_referrer, initial_device, initial_browser_version, initial_city, initial_timezone, 
+            initial_country_code, initial_country, initial_referring_domain, initial_os, session_id, url, screen_height, screen_width, 
+            viewport_height, viewport_width, search_engine, selected_plan, image_key, position, button, screen, billing_cycle)
         VALUES ${valuesString}`,
         values,
         config
