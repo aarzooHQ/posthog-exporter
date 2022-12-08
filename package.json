@@ -4,6 +4,9 @@
     "version": "0.1.0",
     "description": "Export PostHog events to a PostgreSQL instance on ingestion.",
     "devDependencies": {
+        "@posthog/plugin-contrib": "^0.0.3",
+        "@posthog/plugin-scaffold": "^0.10.0",
+        "@types/pg": "^8.6.0",
         "pg": "^8.0.0"
     }
 }
