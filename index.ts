@@ -230,7 +230,7 @@ export async function exportEvents(events: PluginEvent[], { global, jobs }: Post
             country: properties?.$geoip_country_name,
             browser: properties?.$browser,
             browser_version: properties?.$browser_version,
-            device: properties?.$device,
+            device: properties?.$device_type,
             device_id: properties?.$device_id, 
             pathname: properties?.$pathname,
             referrer: properties?.$referrer,
